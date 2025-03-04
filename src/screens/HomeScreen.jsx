@@ -3,6 +3,7 @@ import React from 'react'
 import { useState } from 'react';
 import AllItems from './AllItems';
 import CreateScreen from './CreateScreen';
+import LowStockScreen from './LowStockScreen';
 
 const data = [
     { id: 1, name: "Wheat", stock: 5, unit: "kg" },
@@ -31,7 +32,7 @@ const HomeScreen = () => {
 
       </View>
       {view === 0 && <AllItems data={data} />}
-      {view === 1 && <AllItems/>}
+      {view === 1 && <LowStockScreen data={data}/>}
       {view === 2 && <CreateScreen/>}
     </View>
   )
