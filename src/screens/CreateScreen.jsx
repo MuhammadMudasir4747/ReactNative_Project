@@ -2,22 +2,38 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-na
 import { useState } from 'react'
 
 
-const CreateScreen = () => {
+const CreateScreen = ({data, onAddItem, onDeleteItem }) => {
+
+
     const [itemName, setitemName] = useState("")
     const [stock, setstock] = useState("")
     const [items, setItems] = useState([]);
 
-    const handleAddItems=()=>{
-      if(itemName.trim() && stock.trim()){
-        setItems([...items, {id: Date.now().toString(), name: itemName, stock}])
-    
-        setitemName("");
-        setstock("");
+    const handleAddItems = () => {
+      if (itemName.trim() && stock.trim()) {
+        const newItem = {
+          id: Date.now().toString(),
+          name: itemName,
+          stock: parseInt(stock),
+          unit: 'kg', // You can modify this to be dynamic if needed
+        };
+        onAddItem(newItem); // Add item to the shared state
+        setitemName('');
+        setstock('');
+      }
+    };
+    const DeleteItems=(id)=>{
+      const updatedItems= items.filter(item=> item.id !== id);
+      setItems(updatedItems);
+
+      if (data.some(item => item.id === id) && onDeleteItem) {
+        onDeleteItem(id);
     }
     }
 
 
   return (
+    <>
     <View>
     <View style= {styles.container}>
       <TextInput style={styles.input}
@@ -45,6 +61,8 @@ const CreateScreen = () => {
     <View style={styles.tableHeader}>
         <Text style={styles.headerText}>Item Name</Text>
         <Text style={styles.headerText}>Stock</Text>
+        <Text style={styles.headerText} >Manage Items</Text>
+  
     </View>
 
     <FlatList
@@ -53,17 +71,41 @@ const CreateScreen = () => {
     renderItem={({item})=>(
       <View style={styles.tableRow}>
         <Text style={styles.rowText}>{item.name}</Text>
-        <Text style={styles.rowText}>{item.stock}</Text>
+        <Text style={styles.rowText}>{item.stock}</Text> 
+         <Pressable style={styles.deleteBtn} onPress={()=> DeleteItems(item.id)}>
+           <Text style={{color: "white"}}>Delete Item</Text>
+            </Pressable>
 
       </View>
+
+      
     )}
     
     
     />
 
-    </View>
+<FlatList
+      data={data}
+      keyExtractor={(item)=>item.id.toString()}
+      renderItem={({item})=>(
+        <View style={ styles.tableRow}>
+          <Text style={styles.rowText}>{item.name}</Text>
+          <Text style={styles.rowText}>{item.stock}</Text>
+          <Pressable style={styles.deleteBtn} onPress={()=> DeleteItems(item.id)}>
+           <Text style={{color: "white"}}>Delete Item</Text>
+            </Pressable>
+        </View>
+        
+      )}
+      />
+
 
     </View>
+
+    
+
+    </View>
+    </>
   )
 }
 
@@ -120,5 +162,13 @@ const styles = StyleSheet.create({
     },
     rowText: {
         fontSize: 14
-    }
+    },
+    deleteBtn:{
+      borderWidth: 0.5,
+      padding: "1%",
+      borderRadius: 10,
+      backgroundColor: "#DC143C",
+      
+    },
+
 })

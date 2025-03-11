@@ -3,6 +3,7 @@
 
   const AllItems = ({data}) => {
     return (
+      <>
       <View>
         <View style={styles.headingContainer}>
           <Text style={styles.headingText}>Items</Text>
@@ -22,7 +23,10 @@
       
 
       </View>
+ 
+      </>
     )
+    
   }
 
   export default AllItems
